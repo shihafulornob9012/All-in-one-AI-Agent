@@ -8,25 +8,21 @@ import userRouter from './routes/userRoutes.js'
 
 const app = express()
 
-// Vercel does NOT allow top-level await (Serverless)
-// Wrap it inside an async IIFE
-;(async () => {
-  await connectCloudinary()
-})()
+await connectCloudinary()
 
 app.use(cors())
 app.use(express.json())
 app.use(clerkMiddleware())
 
-app.get('/', (req, res) => res.send('Server is Live!'))
+app.get('/', (req, res)=>res.send('Server is Live!'))
 
 app.use(requireAuth())
 
 app.use('/api/ai', aiRouter)
 app.use('/api/user', userRouter)
 
-// ❌ REMOVE app.listen()
-// app.listen(PORT, ()=> console.log(`Server is running on ${PORT}`));
+const PORT = process.env.PORT || 3000;
 
-// ✅ EXPORT the app for Vercel serverless function
-export default app;
+app.listen(PORT, ()=>{
+    console.log('Server is running on port', PORT);
+})
